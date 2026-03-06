@@ -1,50 +1,69 @@
-# Step
-Footsteps power generation 
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+# Footstep Power Generation ⚡
 
-#define PIEZO_PIN A0        // Analog pin connected to piezo through the rectifier, cap, and voltage divider
-#define STEP_THRESHOLD 80   // Threshold for step detection (adjust as per your sensor/circuit)
-#define MIN_BETWEEN_STEPS 100   // Min time between step counts to prevent double-counting (ms)
+An Arduino-based project that detects footsteps using a **piezoelectric sensor** and displays the **step count and generated voltage** on a 16x2 I2C LCD display.
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // Change 0x27 to 0x3F if your LCD uses different address
+This project demonstrates how **mechanical energy from footsteps can be converted into electrical energy** and monitored using a microcontroller.
 
-unsigned long lastStepTime = 0;
-unsigned int stepCount = 0;
+---
 
-void setup() {
-  lcd.init();
-  lcd.backlight();
-  lcd.setCursor(0, 0);
-  lcd.print("Footstep Power");
-  lcd.setCursor(0, 1);
-  lcd.print("Init...");
-  delay(2000);
-  lcd.clear();
+## Overview
 
-  pinMode(PIEZO_PIN, INPUT);
-}
+When a person steps on the piezoelectric sensor, mechanical pressure generates a small electrical signal.
+The signal is rectified and stabilized, then read by the Arduino through an analog pin.
+A simple threshold algorithm detects steps and updates the LCD display.
 
-void loop() {
-  int sensorValue = analogRead(PIEZO_PIN);
-  float voltage = (sensorValue / 1023.0) * 5.0; // Convert ADC value to voltage
+---
 
-  // Step detection with debouncing
-  if(sensorValue > STEP_THRESHOLD && (millis() - lastStepTime > MIN_BETWEEN_STEPS)) {
-    stepCount++;
-    lastStepTime = millis();
-  }
+## Components Used
 
-  // Display step count and voltage on LCD
-  lcd.setCursor(0,0);
-  lcd.print("Steps: ");
-  lcd.print(stepCount);
-  lcd.print("   "); // Clear trailing chars
+* Arduino Uno / Arduino Nano
+* Piezoelectric sensor
+* Bridge rectifier
+* Capacitor (for smoothing the signal)
+* Voltage divider
+* 16x2 LCD with I2C module
+* Jumper wires
 
-  lcd.setCursor(0,1);
-  lcd.print("Volt: ");
-  lcd.print(voltage, 2);
-  lcd.print("V    "); // Clear trailing chars
+---
 
-  delay(100);
-}
+## How It Works
+
+1. A **piezoelectric sensor** generates voltage when pressure is applied.
+2. The signal passes through a **rectifier and capacitor** to stabilize the voltage.
+3. Arduino reads the signal using an **analog input pin**.
+4. If the voltage exceeds a **threshold**, a step is detected.
+5. The **LCD displays**:
+
+   * Total number of steps
+   * Generated voltage
+
+---
+
+## Example LCD Output
+
+Steps: 15
+Volt: 2.41V
+
+---
+
+## Code
+
+The Arduino code for this project is available in:
+
+`footstep_power_generation.ino`
+
+---
+
+## Possible Improvements
+
+* Store generated energy in **supercapacitors**
+* Calculate **total energy produced**
+* Log step data to an **SD card**
+* Build a **smart energy-harvesting floor system**
+* Add **Bluetooth / IoT monitoring**
+
+---
+
+## Author
+
+Rutva Jakhiya
